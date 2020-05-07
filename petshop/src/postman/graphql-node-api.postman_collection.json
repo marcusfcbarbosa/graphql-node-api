@@ -1,0 +1,557 @@
+{
+	"info": {
+		"_postman_id": "f7746cc9-bc8f-4cc2-877a-34531639a2d0",
+		"name": "graphql-node-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Store",
+			"item": [
+				{
+					"name": "1-Post Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\n\t\"title\":\"Mouse Gamer\",\n\t\"description\":\"Mouse Gamer\",\n\t\"price\":45,\n\t\"quantityOnHand\":20\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2-GET PRODUCTS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/v1/Products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Products"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Backoffice Module",
+			"item": [
+				{
+					"name": "Token",
+					"item": [
+						{
+							"name": "1-POST TOKEn",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{  \n\t\"username\":\"79698499032\",\n\t\"password\":\"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/v1/accounts/authenticate",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"v1",
+										"accounts",
+										"authenticate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2-Get Account With TOKEN",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1hcmN1cyBGZXJuYW5kbyIsImRvY3VtZW50IjoiMzU4NDg4NTc4NzMiLCJlbWFpbCI6Im1hcmN1c2ZjYkBob3RtYWlsLmNvbSIsInJvbGVzIjpbInVzZXIiLCJhZG1pbiJdLCJpYXQiOjE1ODgyNzc1NzcsImV4cCI6MTU4ODI4MTE3N30.d_kxfiLhPwGzByGXeuJznegPrSp3mdp3SZGdHPubjqk",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/v1/accounts",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"v1",
+										"accounts"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "1-Get Customer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2- POST Customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"Francyne Freitas\",\n\t\"username\":\"franfreitas\",\n\t\"email\": \"franfreitas@hotmail.com\",\n\t\"document\":\"79698499032\",\n\t\"password\":\"123456\",\n\t\"roles\":[\"user\",\"admin\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3-GET Customer By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers/35848857873",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers",
+								"35848857873"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4-Put Customers",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"Marcus\",\n\t\"email\": \"marcus@teste\",\n\t\"password\" :\"1234566\",\n\t\"document\":\"1234566\",\n\t\"active\"  : true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers/145264",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers",
+								"145264"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5- DELETE Customer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers/5e9f575d19bb8327c8c795bf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers",
+								"5e9f575d19bb8327c8c795bf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6 - POST Customer Billing Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"zipCode\":\"12941234\",\n\t\t\"street\":\"yuea aeiaeaea  awea \",\n\t\t\"number\":\"1321\",\n\t\t\"complement\":\"ss   er wer wer w\",\n\t\t\"neighborhood\":\"er ww wer ewe wr e\",\n\t\t\"city\":\"Atibaia\",\n\t\t\"state\":\"SP\",\n\t\t\"country\":\"Brasil\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Address/35848857873/billing",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Address",
+								"35848857873",
+								"billing"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7 - POST Customer Shipping Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"zipCode\":\"12941234\",\n\t\t\"street\":\"yuea aeiaeaea  awea \",\n\t\t\"number\":\"1321\",\n\t\t\"complement\":\"ss   er wer wer w\",\n\t\t\"neighborhood\":\"er ww wer ewe wr e\",\n\t\t\"city\":\"Atibaia\",\n\t\t\"state\":\"SP\",\n\t\t\"country\":\"Brasil\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Address/35848857873/shipping",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Address",
+								"35848857873",
+								"shipping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8 - Post Customer Pet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"name\":\"amora\",\n\t\t\"gender\":\"female\",\n\t\t\"kind\":\"dog\",\n\t\t\"brand\":\"french-buldog\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Pets/35848857873",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Pets",
+								"35848857873"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9- PUT Customer PET",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"name\":\"amorazinha\",\n\t\t\"gender\":\"female\",\n\t\t\"kind\":\"dog\",\n\t\t\"brand\":\"french-buldog\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Pets/35848857873/5e9f577419bb8327c8c795c0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Pets",
+								"35848857873",
+								"5e9f577419bb8327c8c795c0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "10- GET- CUSTOMER BY DOCUMENT",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers/35848857873",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers",
+								"35848857873"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "11 - POST CUSTOMER QUERY (PAGINAÇÃO)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\":{\n\t\t\"document\":\"14839364060\",\n\t\t\"name\":\"Francyne Freitas\"\n\t},\n\t\"fields\":\"name document email\",\n\t\"sort\":\"name\",\n\t\"skip\":0,\n\t\"take\":25\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers/query",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "12- PUT CUSTOMER UPDATE",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\":\"Francyne Freitas MEU AMOR\",\n\t\"username\":\"franf\",\n\t\"email\": \"franf@hotmail.com\",\n    \"password\":\"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers/14839364060",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers",
+								"14839364060"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "13- POST CREATE CREDIT-CARD",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\t\"holder\":\"MARCUS FERNANDO\",\r\n\t\t\"number\":\"1234567897412589\",\r\n\t\t\"expiration\":\"1452\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/v1/Customers/35848857873/credit-cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Customers",
+								"35848857873",
+								"credit-cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "14-GET ADDRESS BY ZIP CODE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/v1/Address/search/12955000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"Address",
+								"search",
+								"12955000"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "CQRS",
+			"item": [
+				{
+					"name": "!-POST ROOM TES",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/v1/rooms",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"v1",
+								"rooms"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
