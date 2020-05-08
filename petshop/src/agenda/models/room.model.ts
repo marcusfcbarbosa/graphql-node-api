@@ -6,10 +6,10 @@ export class Room extends AggregateRoot {
         super();
     }
 
-    book(customerId: string) {
+    book(customerId: string, date:Date) {
         //Regras de negócio
 
         //ao finalizar a reserva de sala, dispara o evento
-        this.apply(new RoomBookedEvent(customerId, this.id));
+        this.apply(new RoomBookedEvent(customerId, this.id));//Manda email, whatever...
     }
 }

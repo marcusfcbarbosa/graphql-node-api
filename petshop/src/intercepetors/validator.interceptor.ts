@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { IContract } from 'src/shared/icontract';
 import { Result } from 'src/backoffice/models/result.model';
 
-
 @Injectable()
 export class ValidatorInterceptor implements NestInterceptor {
     constructor(
@@ -11,7 +10,6 @@ export class ValidatorInterceptor implements NestInterceptor {
     }
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-
         const body = context.switchToHttp().getRequest().body;
         const valid = this.contract.validate(body);
 

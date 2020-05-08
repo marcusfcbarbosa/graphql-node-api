@@ -9,10 +9,10 @@ export class RoomBookService {
         private readonly commandBus: CommandBus
     ) { }
 
-    async Book(customerId: string, roomId: string) {
+    async Book(command: BooKRoomComand) {
         console.log('RoomBookService: Book - Executando o serviço...');
-        return await this.commandBus.execute(
-            new BooKRoomComand(customerId, roomId),
+        return await this.commandBus.execute(//pode-se enfileirar, inserir mais de um command
+            command
         );
     }
 }
