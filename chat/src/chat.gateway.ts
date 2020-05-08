@@ -28,12 +28,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @SubscribeMessage('chat')
     chat(client: any, data: any) {
         //cliente emite para usuarios internos
+        console.log(data);
+        client.emit(client.id, 'Mensagem');//mandando mensagem para cliente especifico
+        client.broadcast.emit('chat', data);//emite mensagem pro chat todo
     }
 
     @SubscribeMessage('users')
     users(client: any, data: any) {
         //usuarios internos para os clientes
-
+        console.log(data);
+        return data;
     }
-
 }
