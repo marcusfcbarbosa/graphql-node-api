@@ -1,0 +1,450 @@
+C:/Users/dev/CQRS
+
+Trabalhando com nest framework
+
+https://docs.nestjs.com/
+
+
+1- Instalando nest de maneira global
+
+npm install -g @nestjs/cli
+		npm install -g @nestjs/cli@5.7.1   ==>fazendo isso somente devido ao curso
+nest --version
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2- criando um novo projeto com nest
+
+nest new NomeDaAplicacao
+
+nest new petshop
+
+Obs: Nest trabalha sempre com módulos  !!!IMPORTANTE!!!!
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3- Criando um módulo
+
+	nest generate module backoffice
+	nest generate module backofficeModule
+	nest generate module store-module
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4- Criando um controller
+
+	nest generate controller customer.controller
+	nest generate controller account.controller
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5- Entendendo o package.json
+
+Por padrao o package.json possui o formato:
+"scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:dev": "nodemon",
+    "start:debug": "nodemon --config nodemon-debug.json",
+    "prestart:prod": "rimraf dist && npm run build",
+    "start:prod": "node dist/main.js",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json"
+  }
+  
+ para se executar qualquer um desses comandos deve
+ 
+ EX:
+ 
+	npm run start:dev
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 6-Instalando o mongoose para criar os schemas e o arquivo para as requisiçoes http
+ 
+	npm install --save @nestjs/mongoose mongoose
+ 
+ 
+ Obs: quando se trabalha apenas com node o Schema é nomeado e exportado da sequinte maneira:
+ 
+ 
+ 'use strict';
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const schema = new Schema({
+    number: {
+        type: String,
+        required: true
+    },
+	.
+	.
+	.
+	.
+	};
+module.exports = mongoose.model('Order', schema);
+
+já usando typescript o Schema deve ser referenciado no modulo
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7- Conectando com MongoDB
+	Dentro do app.module.ts 
+	
+	devemos conectar com o Banco de dados
+
+		import { Module } from '@nestjs/common';
+		import { AppController } from './app.controller';
+		import { AppService } from './app.service';
+		import { BackofficeModule } from './backoffice/backoffice.module';
+		import { MongooseModule } from '@nestjs/mongoose';
+
+
+		@Module({
+		imports: [
+		MongooseModule.forRoot('mongodb+srv://marcusfcb:mfcb4625@cluster0-8nqe9.azure.mongodb.net/test?retryWrites=true&w=majority'),
+		BackofficeModule
+		],
+		controllers: [AppController],
+		providers: [AppService],
+		})
+		export class AppModule { }
+
+
+Dentro do modulo do backOffice (usado no exemplo, devemos importar os schemas criados)
+
+	backoffice.module.ts
+	
+				import { Module } from '@nestjs/common';
+				import { CustomerController } from './controllers/customer.controller';
+				import { MongooseModule } from '@nestjs/mongoose';
+				import { CustomerSchema } from './schemas/customer.schema';
+				import { UserSchema } from './schemas/user.schema';
+
+				@Module({
+				imports: [MongooseModule.forFeature([
+				{
+				  name: 'Customer',
+				  schema: CustomerSchema
+				},
+				{
+				  name: 'User',
+				  schema: UserSchema
+
+				}
+				])],
+				controllers: [CustomerController]
+				})
+				export class BackofficeModule { }
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8- A comunicação entre a base e a controller são feitas através de services
+
+			import { Model } from 'mongoose';
+			import { Injectable } from '@nestjs/common';
+			import { User } from '../models/user.model';
+			import { InjectModel } from '@nestjs/mongoose';
+
+			@Injectable()
+			export class AccountService {
+				//Toda vez que criar uma instancia do serviço, ele ja cria uma instancia do Model por padrão
+				//Singlton a nivel de classe e nao de aplicacao
+				constructor(@InjectModel('User') private readonly model: Model<User>) {
+				}
+
+				create(data: User) {
+					const user = new this.model(data);
+					user.save();
+				}
+
+				update(data: User) {
+					const user = new this.model(data);
+				}
+
+			}
+			
+			
+	Após criado o serviço adicionar em forma de providers no backOffice.module.ts (como se fosse registrar as dependencias em .net)
+					import { Module } from '@nestjs/common';
+					import { CustomerController } from './controllers/customer.controller';
+					import { MongooseModule } from '@nestjs/mongoose';
+					import { CustomerSchema } from './schemas/customer.schema';
+					import { UserSchema } from './schemas/user.schema';
+					import { AccountService } from './services/account.service';
+
+					@Module({
+					  imports: [MongooseModule.forFeature([
+						{
+						  name: 'Customer',
+						  schema: CustomerSchema
+						},
+						{
+						  name: 'User',
+						  schema: UserSchema
+
+						}
+					  ])],
+					  controllers: [CustomerController],
+					  providers: [AccountService]    <=========================== !!!AQUI!!!!
+					})
+					export class BackofficeModule { }
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9- Injetando o serviço na Controller
+
+
+@Controller('v1/Customers')
+	export class CustomerController {
+    constructor(private readonly accountService: AccountService) {
+    }
+	
+Dentro do POST
+
+	@Post()
+    @UseInterceptors(new ValidatorInterceptor(new CreateCustomerContract()))
+    post(@Body() body: CreateCustomerDto) {
+
+        //esse Código é uma promisse
+        this.accountService.create(new User(body.document, body.password, true))
+            .then((res) => {
+                    //faz o que quiser aqui
+            });
+        return new Result('Inserido com sucesso', true, body, null);
+    }
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10- Integrando com base Relacional MySql
+
+	nest generate module store
+
+	npm install --save @nestjs/typeorm  mysql
+	
+	No windows, nao cria o index.js, portando necessita rodar o comando
+	
+	npm install --save typeorm@0.2.10-rc.2 <====== ISSO corrige!!
+	
+	
+Baixando versao windows
+	https://dev.mysql.com/downloads/mysql/	
+
+
+Primeiro Script base
+
+ALTER USER 	'root'@'localhost' identified with mysql_native_password by 'mfcb4625';
+
+create schema `7180`;
+
+create table `7180`.`product`(
+	`id`  INT NOT NULL,
+    `title` VARCHAR(80) NULL,
+    `description` TEXT(4000) NULL,
+    `product_col` VARCHAR(45) NULL,
+    PRIMARY KEY (`id`)
+);
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+11- Trabalhando com autenticação
+
+	npm install --save @nestjs/passport passport passport-http-bearer
+	
+	npm install --save @nestjs/jwt passport-jwt
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	
+12 - Para uso de Guid com typescript
+
+	npm i guid-typescript --save
+	
+	import { Guid } from 'guid-typescript'
+	const password = Guid.create().toString().substring(0, 8).replace('-', '');
+-------------------------------------------------------------------------------------
+13- criar variavel de ambiente
+
+no arquivo nodemon.json temos o seguinte formato
+
+{
+  "watch": ["src"],
+  "ext": "ts",
+  "ignore": ["src/**/*.spec.ts"],
+  "exec": "ts-node -r tsconfig-paths/register src/main.ts",
+  "env":{ <===== adicione uma chave
+    "NODE_ENV": "development",
+    "CONNECTION_STRING":"mongodb+srv://marcusfcb:mfcb4625@cluster0-8nqe9.azure.mongodb.net/test?retryWrites=true&w=majority"
+  }
+}
+
+e no app.module.ts
+		@Module({
+			imports: [
+				MongooseModule.forRoot(process.env.CONNECTION_STRING)
+-------------------------------------------------------------------------------------
+14 - criptografando senha
+	
+	md5
+
+	npm install md5-typescript --save
+	
+	import { Md5 } from 'md5-typescript'
+
+
+===== 
+Nao funciona
+async authenticate(username: string, password: string): Promise<Customer> {
+        return await this.customerModel
+            .findOne({
+                'user.username': username,
+                'user.password': password
+            }).populate('user', '-password')
+            .exec();
+    }
+===
+-------------------------------------------------------------------------------------
+15- trabalhar com cache
+
+Dentro do arquivo .module de cada módulo criado, 
+
+	npm install cache-manager --save
+
+devemos importar 
+
+@Module({
+  imports:
+    [
+      CacheModule.register(),
+
+
+CacheModule.register(),
+
+No controller
+
+@Get()
+@UseInterceptors(CacheInterceptor)//cacheando requisições de get
+async get() {
+	try {
+		const customers = await this.customerService.findAll();
+		return new Result('', true, customers, null);
+	} catch (error) {
+		throw new HttpException(new Result('Erro ao processar requisição', false, null, error), HttpStatus.BAD_REQUEST);
+	}
+}
+-------------------------------------------------------------------------------------
+16- Log
+
+Por padrão no arquivo main.ts
+
+temos o formato:
+
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule); < ===== Nessa area devemos alterar
+  await app.listen(3000);
+}
+bootstrap();
+
+----
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule, {
+    logger: console,
+  });
+  await app.listen(3000);
+}
+bootstrap();
+---
+
+arquivo de LogCustomizado
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule, {
+    logger: new CustomLogger(), < =======
+  });
+  await app.listen(3000);
+}
+bootstrap();
+-------------------------------------------------------------------------------------
+17- Compressao de dados para envio na tela em formato .zip (tráfego de rede)
+	
+	npm i --save compression
+	
+	dentro do main.ts
+	
+	import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { CustomLogger } from './3_shared/services/custom-logger.service';
+import * as compression from 'compression';
+
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule, {
+    logger: new CustomLogger(),
+  });
+  app.use(compression());//compressao de dados para reduç~çao de tráfego
+  await app.listen(3000);
+}
+bootstrap();
+------------------------------------------------------------------------------------------------
+18 - Requisição as api´s externas
+
+Dentro do .module de cada módulo,importar HttpModule
+------------------------------------------------------------------------------------------------
+19 - Documentação Swagger
+
+ npm install --save @nestjs/swagger swagger-ui-express
+ 
+ NAO TA FUNCIONANDO, BLOQUEANDO A PORTA 3000
+------------------------------------------------------------------------------------------------
+20- CQRS (Começado)
+
+	nest generate module agenda
+	
+	npm install --save @nestjs/cqrs
+--------------------------------------------------------------------
+21 - Criando o chat
+
+nest new chat
+
+dentro src remova o app.controller.spec.ts
+					app.service.ts
+					app.controller.ts
+					
+					deixe somente com app.module.ts eo main.ts
+					
+
+--------------------------------------------------------------------
+22 -Instalando o webSocket
+ 
+npm i --save @nestjs/websockets
+npm i --save @nestjs/platform-socket.io
+
+//Tipos do type script para o socket.io
+npm i --save-dev @types/socket.io //em dev por nao executar em produção
+
+Aplica-se o conceito de gateways, ao invés de controllers
+
+instalando o servidor http(Servidor web de arquivos estaticos)
+npm install -g http-server
+
+entrando no diretorio client e digito o comando:
+	http-server -c1
+	
+    o c1 siginifica cache 1 segundo de cache
+--------------------------------------------------------------------
+23- GraphQL
+
+nest new reports
+nest g module reports
+
+//tipos do graphql para trabalhar com nest
+npm i --save @nestjs/graphql
+//para trabalha com o nest nesse formato usamos
+npm i --save apollo-server-express
+npm i --save graphql-tools graphql
+
+npm i  type-graphql --save (Suporte ao typescript do GraphQL)
+
+Classe tipada para ser lida pelo GraphQL
+import { Field, ID, ObjectType } from 'type-graphql'
+
+@ObjectType()
+export class Product {
+    @Field(type => ID)
+    id: string;
+
+    @Field()
+    title: string;
+
+    @Field({ nullable: true })
+    descritpion?: string;
+}
+
+No GraphQL não existe controller existe resolvers
